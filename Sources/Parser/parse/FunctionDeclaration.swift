@@ -30,7 +30,7 @@ extension JSParser {
             throw .failedExpectation(expected: "{", expectationNote: "to start function body", actual: "\(currentToken)")
         }
         nextToken()
-        var body:[JSFunction.BodyElement] = []
+        var body:[JSSyntax] = []
         while currentToken != .symbol("}") {
             if let s = try parseStatement() {
                 body.append(.statement(s))

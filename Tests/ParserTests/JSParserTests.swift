@@ -10,7 +10,7 @@ import Testing
 
 struct JSParserTests {
     @Test func parseJS() throws {
-        try JSParser.parse("""
+        let code = try JSParser.parse("""
         #!hoopla
         if(true) {
             let bro=5;
@@ -23,12 +23,13 @@ struct JSParserTests {
         }
         """
         )
+        print(code)
     }
 }
 
 extension JSParserTests {
     @Test func parseJS2() throws {
-        try JSParser.parse("""
+        let code = try JSParser.parse("""
         function toggle_filter_options() {
             getElement("filters_dropdown").classList.toggle("first_responder");
         }

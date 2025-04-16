@@ -1,16 +1,13 @@
 import Lexer
 
 public struct JSParser : Sendable {
-    public static func parse(_ string: String) throws(JSParseError) {
+    public static func parse(_ string: String) throws(JSParseError) -> JSSourceCode {
+        var code:JSSourceCode = .init()
         var parser = JSParser(input: string)
         while parser.currentToken != .eof {
-            if let statement = try parser.parseStatement() {
-                print("statement=\(statement)")
-            } else {
-                print("\(parser.currentToken)")
-                parser.nextToken()
-            }
+            try code.syntax.append(parser.parseSyntax())
         }
+        return code
     }
 
     var lexer:JSLexer
