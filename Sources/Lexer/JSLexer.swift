@@ -1,3 +1,4 @@
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
 public struct JSLexer {
     public static let stringDelimiters:Set<Character> = ["\"", "'", "`"]
     public static let arithmeticTokens:Set<String> = ["+", "-", "*", "/"]
@@ -10,9 +11,27 @@ public struct JSLexer {
         "*": 6, "/": 6
     ]
     public static let unaryTokens:Set<Character> = ["!", "-", "+"]
-    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "//", "/*"])
+    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "//", "/*", "#"])
     public static let variableDeclTokens:Set<String> = ["let", "const", "var"]
-    public static let keywords:Set<String> = variableDeclTokens.union(["if", "function", "return", "for", "while", "undefined"])
+    public static let keywords:Set<String> = variableDeclTokens.union([
+        "arguments", "async", "await",
+        "break",
+        "case", "catch", "class", "const", "continue",
+        "debugger", "default", "delete", "do",
+        "else", "enum", "eval", "export", "extends",
+        "false", "finally", "for", "function",
+        "if", "implements", "import", "in", "instanceof", "interface",
+        "let",
+        "new", "null",
+        "package", "private", "protected", "public",
+        "return",
+        "static", "super", "switch",
+        "this", "throw", "true", "try", "typeof",
+        "var", "void",
+        "while", "with",
+        "yield",
+        "undefined"
+    ])
     public static let compoundArithmeticTokens:Set<String> = ["+=" , "-=", "*=", "/="]
 
     public let input:String

@@ -13,6 +13,7 @@ import Testing
 struct JSParserTests {
     @Test func parseJS() {
         JSParser.parse("""
+        #!hoopla
         if(true) {
             let bro=5;
             const lil=undefined;

@@ -4,6 +4,8 @@ public enum JSStatement {
     case returnStatement(JSExpr)
     case ifStatement(IfStatement)
     case loop(JSLoopType, JSExpr)
+
     case comment(String)
-    case multilineComment(String)
+    case blockComment(String)
+    case hashbangComment(String)
 }

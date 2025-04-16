@@ -21,6 +21,7 @@ public struct JSParser {
         self.currentToken = lexer.nextToken()
     }
 
+    /// Assigns the `currentToken` to the next token in the lexer. 
     mutating func skip() {
         currentToken = lexer.nextToken()
     }

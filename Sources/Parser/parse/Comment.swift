@@ -1,9 +1,18 @@
 extension JSParser {
     mutating func parseComment() -> JSStatement? {
-        guard currentToken == .symbol("/") else { return nil }
         let originalIndex = lexer.index
+        switch currentToken {
+        case .symbol("/"):
+            break
+        case .symbol("#"):
+            guard let c = parseHashbangComment(originalIndex: originalIndex) else { return nil }
+            skip()
+            return c
+        default:
+            return nil
+        }
         lexer.skipWhitespace()
-        guard let comment = parseSingleComment() ?? parseMultiLineComment() else {
+        guard let comment = parseSingleComment() ?? parseBlockComment() else {
             lexer.index = originalIndex
             return nil
         }
@@ -12,23 +21,22 @@ extension JSParser {
     }
 
     private mutating func parseSingleComment() -> JSStatement? {
-        guard lexer.input[lexer.index] == "/" else {
-            return nil
-        }
-        lexer.skip()
+        guard lexer.input[lexer.index] == "/" else { return nil }
         var comment = ""
+        parseComment(comment: &comment)
+        return .comment(comment)
+    }
+    private mutating func parseComment(comment: inout String) {
+        lexer.skip()
         var char = lexer.input[lexer.index]
         while char != "\n" {
             comment.append(char)
             lexer.skip()
             char = lexer.input[lexer.index]
         }
-        return .comment(comment)
     }
-    private mutating func parseMultiLineComment() -> JSStatement? {
-        guard lexer.input[lexer.index] == "*" else {
-            return nil
-        }
+    private mutating func parseBlockComment() -> JSStatement? {
+        guard lexer.input[lexer.index] == "*" else { return nil }
         lexer.skip()
         var comment = ""
         var char = lexer.input[lexer.index]
@@ -41,6 +49,15 @@ extension JSParser {
         }
         lexer.skip()
         lexer.skip()
-        return .multilineComment(comment)
+        return .blockComment(comment)
+    }
+    private mutating func parseHashbangComment(originalIndex: String.Index) -> JSStatement? {
+        guard lexer.index < lexer.input.endIndex && lexer.input[lexer.index] == "!" else {
+            lexer.index = originalIndex
+            return nil
+        }
+        var comment = ""
+        parseComment(comment: &comment)
+        return .hashbangComment(comment)
     }
 }
