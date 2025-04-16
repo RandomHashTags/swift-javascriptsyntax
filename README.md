@@ -6,9 +6,13 @@ A set of Swift libraries for parsing, inspecting, generating, and transforming J
 
 - [x] Lexer
 
-## TODO
+## WIP
 
 - [ ] Parser
+- [ ] Embedded support
+
+## TODO
+
 - [ ] Introduce scopes
 - [ ] Minification
 - [ ] Uglification
