@@ -1,19 +1,19 @@
 extension JSParser {
     mutating func parseIfStatement() -> IfStatement {
-        guard case .keyword("if") = currentToken else {
+        guard currentToken == .keyword("if") else {
             fatalError("Expected 'keyword(\"if\")'; got \(currentToken)")
         }
         skip()
-        guard case .symbol("(") = currentToken else {
+        guard currentToken == .symbol("(") else {
             fatalError("Expected '(' after 'if'; got \(currentToken)")
         }
         skip()
         let condition = parseExpression()
-        guard case .symbol(")") = currentToken else {
+        guard currentToken == .symbol(")") else {
             fatalError("Expected ')' after condition; got \(currentToken)")
         }
         skip()
-        guard case .symbol("{") = currentToken else {
+        guard currentToken == .symbol("{") else {
             fatalError("Expected '{' to start 'if' block; got \(currentToken)")
         }
         skip()
@@ -26,14 +26,14 @@ extension JSParser {
                 break
             }
         }
-        guard case .symbol("}") = currentToken else {
+        guard currentToken == .symbol("}") else {
             fatalError("Expected '}' to close 'if' block; got \(currentToken)")
         }
         skip()
         var elseBranch:[JSStatement]? = nil
         if case .keyword("else") = currentToken {
             skip()
-            guard case .symbol("{") = currentToken else {
+            guard currentToken == .symbol("{") else {
                 fatalError("Expected '{' to start 'else' block; got \(currentToken)")
             }
             skip()
@@ -46,7 +46,7 @@ extension JSParser {
                     break
                 }
             }
-            guard case .symbol("}") = currentToken else {
+            guard currentToken == .symbol("}") else {
                 fatalError("Expected '}' to close 'else' block; got \(currentToken)")
             }
             skip()

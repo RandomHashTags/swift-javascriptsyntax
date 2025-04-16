@@ -8,14 +8,14 @@ extension JSParser {
         if currentToken != .symbol(")") {
             while true {
                 arguments.append(parseExpression())
-                if case .symbol(",") = currentToken {
+                if currentToken == .symbol(",") {
                     skip()
                 } else {
                     break
                 }
             }
         }
-        guard case .symbol(")") = currentToken else {
+        guard currentToken == .symbol(")") else {
             fatalError("Expected ')' after arguments; got \(currentToken)")
         }
         skip()

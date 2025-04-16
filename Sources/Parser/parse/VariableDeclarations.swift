@@ -9,7 +9,7 @@ extension JSParser {
         guard let variables = parseVariableDeclarationsWithoutKeyword() else {
             fatalError("Expected variable decl; got \(currentToken)")
         }
-        guard case .symbol(";") = currentToken else {
+        guard currentToken == .symbol(";") else {
             fatalError("Expected ';' after expression; got \(currentToken)")
         }
         skip()
@@ -20,7 +20,7 @@ extension JSParser {
             fatalError("Expected identifier after keyword; got \(currentToken)")
         }
         skip()
-        guard case .symbol("=") = currentToken else {
+        guard currentToken == .symbol("=") else {
             print("Expected '=' after identifier; got \(currentToken)")
             return nil
         }

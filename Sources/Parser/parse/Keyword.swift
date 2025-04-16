@@ -11,7 +11,7 @@ extension JSParser {
         case "return":
             skip()
             let value = parseExpression()
-            guard case .symbol(";") = currentToken else {
+            guard currentToken == .symbol(";") else {
                 print("Expected ';' after return; got \(currentToken)")
                 return nil
             }

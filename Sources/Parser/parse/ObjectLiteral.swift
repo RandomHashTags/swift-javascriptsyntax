@@ -7,18 +7,18 @@ extension JSParser {
                 fatalError("Expected identifier for object key; got \(currentToken)")
             }
             skip()
-            guard case .symbol(":") = currentToken else {
+            guard currentToken == .symbol(":") else {
                 fatalError("Expected ':' after key; got \(currentToken)")
             }
             skip()
             pairs[key] = parseExpression()
-            if case .symbol(",") = currentToken {
+            if currentToken == .symbol(",") {
                 skip()
             } else {
                 break
             }
         }
-        guard case .symbol("}") = currentToken else {
+        guard currentToken == .symbol("}") else {
             fatalError("Expected '}' to close object literal; got \(currentToken)")
         }
         skip()

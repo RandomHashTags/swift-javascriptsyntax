@@ -7,13 +7,13 @@ extension JSParser {
         var elements:[JSExpr] = []
         while currentToken != .symbol("]") {
             elements.append(parseExpression())
-            if case .symbol(",") = currentToken {
+            if currentToken == .symbol(",") {
                 skip()
             } else {
                 break
             }
         }
-        guard case .symbol("]") = currentToken else {
+        guard currentToken == .symbol("]") else {
             fatalError("Expected ']' to close array; got \(currentToken)")
         }
         skip()

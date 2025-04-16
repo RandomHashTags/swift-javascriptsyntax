@@ -4,38 +4,32 @@ extension JSParser {
             fatalError("Expected keyword(\"function\"); got \(currentToken)")
         }
         skip()
-
         guard case .identifier(let name) = currentToken else {
             fatalError("Expected function name; got \(currentToken)")
         }
         skip()
-
-        guard case .symbol("(") = currentToken else {
+        guard currentToken == .symbol("(") else {
             fatalError("Expected '(' after function name; got \(currentToken)")
         }
         skip()
-
         var parameters:[String] = []
         while case .identifier(let param) = currentToken {
             parameters.append(param)
             skip()
-            if case .symbol(",") = currentToken {
+            if currentToken == .symbol(",") {
                 skip()
             } else {
                 break
             }
         }
-
-        guard case .symbol(")") = currentToken else {
+        guard currentToken == .symbol(")") else {
             fatalError("Expected ')' after parameters; got \(currentToken)")
         }
         skip()
-
-        guard case .symbol("{") = currentToken else {
+        guard currentToken == .symbol("{") else {
             fatalError("Expected '{' to start function body; got \(currentToken)")
         }
         skip()
-
         var body:[JSFunction.BodyElement] = []
         while currentToken != .symbol("}") {
             if let s = parseStatement() {
@@ -46,7 +40,7 @@ extension JSParser {
                 skip()
             }
         }
-        guard case .symbol("}") = currentToken else {
+        guard currentToken == .symbol("}") else {
             fatalError("Expected '}' to close function body; got \(currentToken)")
         }
         skip()
