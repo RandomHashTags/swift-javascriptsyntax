@@ -23,7 +23,7 @@ let package = Package(
         .target(name: "Parser", dependencies: ["Lexer"]),
         .target(name: "Interpreter", dependencies: ["Lexer", "Parser"]),
         .testTarget(
-            name: "swift-javascriptparserTests",
+            name: "ParserTests",
             dependencies: ["Parser"]
         ),
     ]
