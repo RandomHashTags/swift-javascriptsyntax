@@ -1,5 +1,5 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
-public struct JSLexer {
+public struct JSLexer : Sendable {
     public static let stringDelimiters:Set<Character> = ["\"", "'", "`"]
     public static let arithmeticTokens:Set<String> = ["+", "-", "*", "/"]
     public static let operatorPrecedence:[String:Int] = [
@@ -42,6 +42,7 @@ public struct JSLexer {
         self.index = input.startIndex
     }
 
+    /// Skips leading whitespace and returns the next found JSToken.
     public mutating func nextToken() -> JSToken {
         skipWhitespace()
         guard index < input.endIndex else {
@@ -97,6 +98,7 @@ public struct JSLexer {
     }
 
     public mutating func readNumber() -> JSToken {
+        // TODO: try to parse a more accurate JSToken other than just `number`
         var value = ""
         while index < input.endIndex && input[index].isNumber {
             value.append(input[index])

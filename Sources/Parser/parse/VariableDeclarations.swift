@@ -1,23 +1,24 @@
 import Lexer
 
 extension JSParser {
-    mutating func parseVariableDeclarations() -> [JSVariable] {
+    mutating func parseVariableDeclarations() throws(JSParseError) -> [JSVariable] {
         guard case .keyword(let keyword) = currentToken, JSLexer.variableDeclTokens.contains(keyword) else {
-            fatalError("Expected variable decl token; got \(currentToken)")
+            throw .failedExpectation(expected: "", expectationNote: "variable decl token", actual: "\(currentToken)")
         }
         skip()
-        guard let variables = parseVariableDeclarationsWithoutKeyword() else {
-            fatalError("Expected variable decl; got \(currentToken)")
+        guard let variables = try parseVariableDeclarationsWithoutKeyword() else {
+            throw .failedExpectation(expected: "", expectationNote: "variable decl", actual: "\(currentToken)")
         }
         guard currentToken == .symbol(";") else {
-            fatalError("Expected ';' after expression; got \(currentToken)")
+            throw .failedExpectation(expected: ";", expectationNote: "after expression", actual: "\(currentToken)")
         }
         skip()
         return variables
     }
-    mutating func parseVariableDeclarationsWithoutKeyword() -> [JSVariable]? {
+
+    private mutating func parseVariableDeclarationsWithoutKeyword() throws(JSParseError) -> [JSVariable]? {
         guard case .identifier(let name) = currentToken else {
-            fatalError("Expected identifier after keyword; got \(currentToken)")
+            throw .failedExpectation(expected: "", expectationNote: "identifier after keyword", actual: "\(currentToken)")
         }
         skip()
         guard currentToken == .symbol("=") else {
@@ -25,11 +26,11 @@ extension JSParser {
             return nil
         }
         skip()
-        let expr = parseExpression()
+        let expr = try parseExpression()
         var variables:[JSVariable] = [JSVariable(name: name, value: expr)]
         while currentToken == .symbol(",") {
             skip()
-            if let additionalVariables = parseVariableDeclarationsWithoutKeyword() {
+            if let additionalVariables = try parseVariableDeclarationsWithoutKeyword() {
                 variables.append(contentsOf: additionalVariables)
             }
         }

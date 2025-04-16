@@ -1,4 +1,4 @@
-public enum JSStatement {
+public enum JSStatement : Sendable {
     case variables([JSVariable])
     case function(JSFunction)
     case returnStatement(JSExpr)

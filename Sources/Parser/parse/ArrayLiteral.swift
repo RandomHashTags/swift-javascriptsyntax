@@ -1,12 +1,12 @@
 extension JSParser {
-    mutating func parseArrayLiteral() -> JSExpr {
+    mutating func parseArrayLiteral() throws(JSParseError) -> JSExpr {
         guard currentToken == .symbol("[") else {
-            fatalError("Expected '[' to open array; got \(currentToken)")
+            throw .failedExpectation(expected: "[", expectationNote: "to open array", actual: "\(currentToken)")
         }
-        skip() // consume '['
+        skip()
         var elements:[JSExpr] = []
         while currentToken != .symbol("]") {
-            elements.append(parseExpression())
+            try elements.append(parseExpression())
             if currentToken == .symbol(",") {
                 skip()
             } else {
@@ -14,7 +14,7 @@ extension JSParser {
             }
         }
         guard currentToken == .symbol("]") else {
-            fatalError("Expected ']' to close array; got \(currentToken)")
+            throw .failedExpectation(expected: "]", expectationNote: "to close array", actual: "\(currentToken)")
         }
         skip()
         return .arrayLiteral(elements)

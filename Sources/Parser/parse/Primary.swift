@@ -1,7 +1,7 @@
 import Lexer
 
 extension JSParser {
-    mutating func parsePrimary() -> JSExpr {
+    mutating func parsePrimary() throws(JSParseError) -> JSExpr {
         var expr:JSExpr
         switch currentToken {
         case .number(let value):
@@ -20,9 +20,9 @@ extension JSParser {
             skip()
             expr = .identifier(name)
         case .symbol("{"):
-            return parseObjectLiteral()
+            return try parseObjectLiteral()
         case .symbol("["):
-            return parseArrayLiteral()
+            return try parseArrayLiteral()
         default:
             print("Unexpected token: \(currentToken)")
             return .unknown
@@ -32,20 +32,20 @@ extension JSParser {
             case .symbol("."):
                 skip()
                 guard case .identifier(let prop) = currentToken else {
-                    fatalError("Expected property name after '.'; got \(currentToken)")
+                    throw .failedExpectation(expected: "", expectationNote: "property name after '.'", actual: "\(currentToken)")
                 }
                 skip()
                 expr = .propertyAccess(object: expr, property: prop)
             case .symbol("("):
-                expr = parseCallExpression(callee: expr)
+                expr = try parseCallExpression(callee: expr)
             case .symbol("="):
                 let lhs = expr
                 skip()
-                expr = .assignment(variable: lhs, value: parseExpression())
+                expr = try .assignment(variable: lhs, value: parseExpression())
             case .symbol(let op) where JSLexer.compoundArithmeticTokens.contains(op):
                 let lhs = expr
                 skip()
-                expr = .compoundAssignment(operator: op, variable: lhs, value: parseExpression())
+                expr = try .compoundAssignment(operator: op, variable: lhs, value: parseExpression())
             default:
                 return expr
             }

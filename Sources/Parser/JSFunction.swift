@@ -1,4 +1,4 @@
-public struct JSFunction {
+public struct JSFunction : Sendable {
     public let name:String?
     public let parameters:[String]
     public let body:[BodyElement]
@@ -11,7 +11,7 @@ public struct JSFunction {
 }
 
 extension JSFunction {
-    public enum BodyElement {
+    public enum BodyElement : Sendable {
         case statement(JSStatement)
         case expression(JSExpr)
     }

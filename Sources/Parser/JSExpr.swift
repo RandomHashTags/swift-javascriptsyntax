@@ -1,4 +1,4 @@
-public indirect enum JSExpr {
+public indirect enum JSExpr : Sendable {
     case unknown
     case undefined
     case number(Double)

@@ -1,11 +1,11 @@
 import Lexer
 
 extension JSParser {
-    mutating func parseUnary() -> JSExpr {
+    mutating func parseUnary() throws(JSParseError) -> JSExpr {
         if case .symbol(let op) = currentToken, JSLexer.unaryTokens.contains(op) {
             skip()
-            return .unaryOp(op, parseUnary())
+            return try .unaryOp(op, parseUnary())
         }
-        return parsePrimary()
+        return try parsePrimary()
     }
 }

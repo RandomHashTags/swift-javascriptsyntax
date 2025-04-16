@@ -1,10 +1,10 @@
 import Lexer
 
-public struct JSParser {
-    public static func parse(_ string: String) {
+public struct JSParser : Sendable {
+    public static func parse(_ string: String) throws(JSParseError) {
         var parser = JSParser(input: string)
         while parser.currentToken != .eof {
-            if let statement = parser.parseStatement() {
+            if let statement = try parser.parseStatement() {
                 print("statement=\(statement)")
             } else {
                 print("\(parser.currentToken)")

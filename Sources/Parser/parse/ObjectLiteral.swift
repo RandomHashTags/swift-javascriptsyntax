@@ -1,17 +1,17 @@
 extension JSParser {
-    mutating func parseObjectLiteral() -> JSExpr {
+    mutating func parseObjectLiteral() throws(JSParseError) -> JSExpr {
         skip() // consume '{'
         var pairs:[String:JSExpr] = [:]
         while currentToken != .symbol("}") {
             guard case .identifier(let key) = currentToken else {
-                fatalError("Expected identifier for object key; got \(currentToken)")
+                throw .failedExpectation(expected: "", expectationNote: "identifier for object key", actual: "\(currentToken)")
             }
             skip()
             guard currentToken == .symbol(":") else {
-                fatalError("Expected ':' after key; got \(currentToken)")
+                throw .failedExpectation(expected: ":", expectationNote: "after key", actual: "\(currentToken)")
             }
             skip()
-            pairs[key] = parseExpression()
+            pairs[key] = try parseExpression()
             if currentToken == .symbol(",") {
                 skip()
             } else {
@@ -19,7 +19,7 @@ extension JSParser {
             }
         }
         guard currentToken == .symbol("}") else {
-            fatalError("Expected '}' to close object literal; got \(currentToken)")
+            throw .failedExpectation(expected: "}", expectationNote: "to close object literal", actual: "\(currentToken)")
         }
         skip()
         return .objectLiteral(pairs)

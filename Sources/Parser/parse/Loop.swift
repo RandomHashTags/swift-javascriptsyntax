@@ -1,5 +1,5 @@
 extension JSParser {
-    mutating func parseLoop() -> JSStatement {
+    mutating func parseLoop() throws(JSParseError) -> JSStatement {
         var loopType:JSLoopType = .for
         switch currentToken {
         case .keyword("for"):
@@ -7,11 +7,11 @@ extension JSParser {
         case .keyword("while"):
             loopType = .while
         default:
-            fatalError("Expected loop; got \(currentToken)")
+            throw .failedExpectation(expected: "", expectationNote: "loop", actual: "\(currentToken)")
         }
         skip()
         guard currentToken == .symbol("(") else {
-            fatalError("Expected '(' to open loop; got \(currentToken)")
+            throw .failedExpectation(expected: "(", expectationNote: "to open loop", actual: "\(currentToken)")
         }
         skip()
         var expr:JSExpr = .unknown

@@ -1,15 +1,15 @@
 extension JSParser {
-    mutating func parseFunctionDeclaration() -> JSFunction {
+    mutating func parseFunctionDeclaration() throws(JSParseError) -> JSFunction {
         guard case .keyword("function") = currentToken else {
-            fatalError("Expected keyword(\"function\"); got \(currentToken)")
+            throw .failedExpectation(expected: "", expectationNote: "keyword(\"function\")", actual: "\(currentToken)")
         }
         skip()
         guard case .identifier(let name) = currentToken else {
-            fatalError("Expected function name; got \(currentToken)")
+            throw .failedExpectation(expected: "", expectationNote: "function name", actual: "\(currentToken)")
         }
         skip()
         guard currentToken == .symbol("(") else {
-            fatalError("Expected '(' after function name; got \(currentToken)")
+            throw .failedExpectation(expected: "(", expectationNote: "after function name", actual: "\(currentToken)")
         }
         skip()
         var parameters:[String] = []
@@ -23,25 +23,25 @@ extension JSParser {
             }
         }
         guard currentToken == .symbol(")") else {
-            fatalError("Expected ')' after parameters; got \(currentToken)")
+            throw .failedExpectation(expected: ")", expectationNote: "after parameters", actual: "\(currentToken)")
         }
         skip()
         guard currentToken == .symbol("{") else {
-            fatalError("Expected '{' to start function body; got \(currentToken)")
+            throw .failedExpectation(expected: "{", expectationNote: "to start function body", actual: "\(currentToken)")
         }
         skip()
         var body:[JSFunction.BodyElement] = []
         while currentToken != .symbol("}") {
-            if let s = parseStatement() {
+            if let s = try parseStatement() {
                 body.append(.statement(s))
             } else {
-                let expr = parseExpression()
+                let expr = try parseExpression()
                 body.append(.expression(expr))
                 skip()
             }
         }
         guard currentToken == .symbol("}") else {
-            fatalError("Expected '}' to close function body; got \(currentToken)")
+            throw .failedExpectation(expected: "}", expectationNote: "to close function body", actual: "\(currentToken)")
         }
         skip()
         return JSFunction(name: name, parameters: parameters, body: body)
