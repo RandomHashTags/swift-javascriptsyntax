@@ -19,7 +19,7 @@ struct Interpreter {
         self.environment = environment
     }
 
-    func evaluate(_ expr: JSExpr) -> JSExpr {
+    /*func evaluate(_ expr: JSExpr) -> JSExpr {
         switch expr {
         case .unknown:
             return .unknown
@@ -154,5 +154,5 @@ struct Interpreter {
 
     private func evaluateCall(callee: JSExpr, arguments: [JSExpr]) -> JSExpr {
         fatalError("Function calls are not implemented yet")
-    }
+    }*/
 }

@@ -10,13 +10,13 @@ public struct JSLexer {
         "*": 6, "/": 6
     ]
     public static let unaryTokens:Set<Character> = ["!", "-", "+"]
-    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||"])
+    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "//", "/*"])
     public static let variableDeclTokens:Set<String> = ["let", "const", "var"]
-    public static let keywords:Set<String> = variableDeclTokens.union(["if", "function", "return", "for", "while"])
+    public static let keywords:Set<String> = variableDeclTokens.union(["if", "function", "return", "for", "while", "undefined"])
     public static let compoundArithmeticTokens:Set<String> = ["+=" , "-=", "*=", "/="]
 
-    private let input:String
-    private var index:String.Index
+    public let input:String
+    public var index:String.Index
 
     public init(input: String) {
         self.input = input
@@ -53,17 +53,19 @@ public struct JSLexer {
         return .eof
     }
 
-    private mutating func skipWhitespace() {
+    /// Assigns the `index` to the next non-whitespace character's index.
+    public mutating func skipWhitespace() {
         while index < input.endIndex && input[index].isWhitespace {
             skip()
         }
     }
 
-    private mutating func skip() {
+    /// Increments the `index` by one.
+    public mutating func skip() {
         input.formIndex(after: &index)
     }
 
-    private mutating func readIdentifierOrKeyword() -> JSToken {
+    public mutating func readIdentifierOrKeyword() -> JSToken {
         var value = ""
         while index < input.endIndex && (input[index].isLetter || input[index] == "_") {
             value.append(input[index])
@@ -75,7 +77,7 @@ public struct JSLexer {
         return .identifier(value)
     }
 
-    private mutating func readNumber() -> JSToken {
+    public mutating func readNumber() -> JSToken {
         var value = ""
         while index < input.endIndex && input[index].isNumber {
             value.append(input[index])

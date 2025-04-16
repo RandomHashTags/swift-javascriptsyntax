@@ -15,10 +15,11 @@ struct JSParserTests {
         JSParser.parse("""
         if(true) {
             let bro=5;
+            // what
+            /*
+            ding dong
+            */
             var yoink=true;
-            for(var i=0;i<5;i++){
-                console.log("bro");
-            }
         }
         """
         )

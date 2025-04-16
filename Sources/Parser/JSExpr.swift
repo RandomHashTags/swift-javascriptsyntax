@@ -4,7 +4,7 @@ public indirect enum JSExpr {
     case identifier(String)
     case binaryOp(String, JSExpr, JSExpr)
     case call(callee: JSExpr, arguments: [JSExpr])
-    case objectLiteral([String: JSExpr])
+    case objectLiteral([String:JSExpr])
     case arrayLiteral([JSExpr])
     case string(String)
     case boolean(Bool)
@@ -12,4 +12,5 @@ public indirect enum JSExpr {
     case propertyAccess(object: JSExpr, property: String)
     case assignment(variable: JSExpr, value: JSExpr)
     case compoundAssignment(operator: String, variable: JSExpr, value: JSExpr)
+    case loop(JSLoopType, JSExpr)
 }
