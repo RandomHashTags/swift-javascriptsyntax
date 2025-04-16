@@ -65,6 +65,9 @@ extension JSParser {
         case .keyword(let w) where w == "true" || w == "false":
             skip()
             return .boolean(w == "true")
+        case .keyword("undefined"):
+            skip()
+            return .undefined
         case .identifier(let name):
             skip()
             expr = .identifier(name)

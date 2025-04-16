@@ -1,5 +1,6 @@
 public indirect enum JSExpr {
     case unknown
+    case undefined
     case number(Double)
     case identifier(String)
     case binaryOp(String, JSExpr, JSExpr)

@@ -15,6 +15,7 @@ struct JSParserTests {
         JSParser.parse("""
         if(true) {
             let bro=5;
+            const lil=undefined;
             // what
             /*
             ding dong
