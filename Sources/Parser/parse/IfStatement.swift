@@ -3,20 +3,20 @@ extension JSParser {
         guard currentToken == .keyword("if") else {
             throw .failedExpectation(expected: "keyword(\"if\")", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("(") else {
             throw .failedExpectation(expected: "(", expectationNote: "after 'if'", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         let condition = try parseExpression()
         guard currentToken == .symbol(")") else {
             throw .failedExpectation(expected: ")", expectationNote: "after condition", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("{") else {
             throw .failedExpectation(expected: "{", expectationNote: "to start 'if' block", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var block:[JSStatement] = []
         while currentToken != .symbol("}") {
             if let s = try parseStatement() {
@@ -29,14 +29,14 @@ extension JSParser {
         guard currentToken == .symbol("}") else {
             throw .failedExpectation(expected: "}", expectationNote: "to close 'if' block", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var elseBranch:[JSStatement]? = nil
         if case .keyword("else") = currentToken {
-            skip()
+            nextToken()
             guard currentToken == .symbol("{") else {
                 throw .failedExpectation(expected: "{", expectationNote: "to start 'else' block", actual: "\(currentToken)")
             }
-            skip()
+            nextToken()
             var elses:[JSStatement] = []
             while currentToken != .symbol("}") {
                 if let stmt = try parseStatement() {
@@ -49,7 +49,7 @@ extension JSParser {
             guard currentToken == .symbol("}") else {
                 throw .failedExpectation(expected: "}", expectationNote: "to close 'else' block", actual: "\(currentToken)")
             }
-            skip()
+            nextToken()
             elseBranch = elses
         }
         return IfStatement(condition: condition, thenBranch: block, elseBranch: elseBranch)

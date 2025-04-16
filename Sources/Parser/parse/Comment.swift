@@ -6,7 +6,7 @@ extension JSParser {
             break
         case .symbol("#"):
             guard let c = parseHashbangComment(originalIndex: originalIndex) else { return nil }
-            skip()
+            nextToken()
             return c
         default:
             return nil
@@ -16,7 +16,7 @@ extension JSParser {
             lexer.index = originalIndex
             return nil
         }
-        skip()
+        nextToken()
         return comment
     }
 
@@ -27,28 +27,28 @@ extension JSParser {
         return .comment(comment)
     }
     private mutating func parseComment(comment: inout String) {
-        lexer.skip()
+        lexer.nextIndex()
         var char = lexer.input[lexer.index]
         while char != "\n" {
             comment.append(char)
-            lexer.skip()
+            lexer.nextIndex()
             char = lexer.input[lexer.index]
         }
     }
     private mutating func parseBlockComment() -> JSStatement? {
         guard lexer.input[lexer.index] == "*" else { return nil }
-        lexer.skip()
+        lexer.nextIndex()
         var comment = ""
         var char = lexer.input[lexer.index]
         var nextIndex = lexer.input.index(after: lexer.index)
         while char != "*" && nextIndex < lexer.input.endIndex && lexer.input[nextIndex] != "/" {
             comment.append(char)
-            lexer.skip()
+            lexer.nextIndex()
             char = lexer.input[lexer.index]
             lexer.input.formIndex(after: &nextIndex)
         }
-        lexer.skip()
-        lexer.skip()
+        lexer.nextIndex()
+        lexer.nextIndex()
         return .blockComment(comment)
     }
     private mutating func parseHashbangComment(originalIndex: String.Index) -> JSStatement? {

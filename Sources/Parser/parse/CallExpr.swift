@@ -3,13 +3,13 @@ extension JSParser {
         guard currentToken == .symbol("(") else {
             throw .failedExpectation(expected: "(", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var arguments:[JSExpr] = []
         if currentToken != .symbol(")") {
             while true {
                 try arguments.append(parseExpression())
                 if currentToken == .symbol(",") {
-                    skip()
+                    nextToken()
                 } else {
                     break
                 }
@@ -18,7 +18,7 @@ extension JSParser {
         guard currentToken == .symbol(")") else {
             throw .failedExpectation(expected: ")", expectationNote: "after arguments", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         return .call(callee: callee, arguments: arguments)
     }
 }

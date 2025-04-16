@@ -9,13 +9,13 @@ extension JSParser {
             let decl = try parseFunctionDeclaration()
             return .function(decl)
         case "return":
-            skip()
+            nextToken()
             let value = try parseExpression()
             guard currentToken == .symbol(";") else {
                 print("Expected ';' after return; got \(currentToken)")
                 return nil
             }
-            skip()
+            nextToken()
             return .returnStatement(value)
         case "if":
             return try .ifStatement(parseIfStatement())

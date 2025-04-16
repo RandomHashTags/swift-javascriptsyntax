@@ -3,21 +3,21 @@ extension JSParser {
         guard case .keyword("function") = currentToken else {
             throw .failedExpectation(expected: "", expectationNote: "keyword(\"function\")", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard case .identifier(let name) = currentToken else {
             throw .failedExpectation(expected: "", expectationNote: "function name", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("(") else {
             throw .failedExpectation(expected: "(", expectationNote: "after function name", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var parameters:[String] = []
         while case .identifier(let param) = currentToken {
             parameters.append(param)
-            skip()
+            nextToken()
             if currentToken == .symbol(",") {
-                skip()
+                nextToken()
             } else {
                 break
             }
@@ -25,11 +25,11 @@ extension JSParser {
         guard currentToken == .symbol(")") else {
             throw .failedExpectation(expected: ")", expectationNote: "after parameters", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("{") else {
             throw .failedExpectation(expected: "{", expectationNote: "to start function body", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var body:[JSFunction.BodyElement] = []
         while currentToken != .symbol("}") {
             if let s = try parseStatement() {
@@ -37,13 +37,13 @@ extension JSParser {
             } else {
                 let expr = try parseExpression()
                 body.append(.expression(expr))
-                skip()
+                nextToken()
             }
         }
         guard currentToken == .symbol("}") else {
             throw .failedExpectation(expected: "}", expectationNote: "to close function body", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         return JSFunction(name: name, parameters: parameters, body: body)
     }
 }

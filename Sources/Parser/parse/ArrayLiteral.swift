@@ -3,12 +3,12 @@ extension JSParser {
         guard currentToken == .symbol("[") else {
             throw .failedExpectation(expected: "[", expectationNote: "to open array", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var elements:[JSExpr] = []
         while currentToken != .symbol("]") {
             try elements.append(parseExpression())
             if currentToken == .symbol(",") {
-                skip()
+                nextToken()
             } else {
                 break
             }
@@ -16,7 +16,7 @@ extension JSParser {
         guard currentToken == .symbol("]") else {
             throw .failedExpectation(expected: "]", expectationNote: "to close array", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         return .arrayLiteral(elements)
     }
 }

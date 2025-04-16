@@ -9,11 +9,11 @@ extension JSParser {
         default:
             throw .failedExpectation(expected: "", expectationNote: "loop", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("(") else {
             throw .failedExpectation(expected: "(", expectationNote: "to open loop", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         var expr:JSExpr = .unknown
         return .loop(loopType, expr)
     }

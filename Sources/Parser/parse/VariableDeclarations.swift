@@ -5,14 +5,14 @@ extension JSParser {
         guard case .keyword(let keyword) = currentToken, JSLexer.variableDeclTokens.contains(keyword) else {
             throw .failedExpectation(expected: "", expectationNote: "variable decl token", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard let variables = try parseVariableDeclarationsWithoutKeyword() else {
             throw .failedExpectation(expected: "", expectationNote: "variable decl", actual: "\(currentToken)")
         }
         guard currentToken == .symbol(";") else {
             throw .failedExpectation(expected: ";", expectationNote: "after expression", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         return variables
     }
 
@@ -20,16 +20,16 @@ extension JSParser {
         guard case .identifier(let name) = currentToken else {
             throw .failedExpectation(expected: "", expectationNote: "identifier after keyword", actual: "\(currentToken)")
         }
-        skip()
+        nextToken()
         guard currentToken == .symbol("=") else {
             print("Expected '=' after identifier; got \(currentToken)")
             return nil
         }
-        skip()
+        nextToken()
         let expr = try parseExpression()
         var variables:[JSVariable] = [JSVariable(name: name, value: expr)]
         while currentToken == .symbol(",") {
-            skip()
+            nextToken()
             if let additionalVariables = try parseVariableDeclarationsWithoutKeyword() {
                 variables.append(contentsOf: additionalVariables)
             }

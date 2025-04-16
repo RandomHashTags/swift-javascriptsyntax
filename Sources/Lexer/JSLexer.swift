@@ -58,16 +58,16 @@ public struct JSLexer : Sendable {
         }
         if Self.stringDelimiters.contains(char) {
             var string = ""
-            skip()
+            nextIndex()
             while index < input.endIndex && input[index] != char {
                 string.append(input[index])
-                skip()
+                nextIndex()
             }
-            skip()
+            nextIndex()
             return .string(delimiter: char, string)
         }
         if Self.symbols.contains(String(char)) {
-            skip()
+            nextIndex()
             return .symbol(String(char))
         }
         return .eof
@@ -76,12 +76,12 @@ public struct JSLexer : Sendable {
     /// Assigns the `index` to the next non-whitespace character's index.
     public mutating func skipWhitespace() {
         while index < input.endIndex && input[index].isWhitespace {
-            skip()
+            nextIndex()
         }
     }
 
     /// Increments the `index` by one.
-    public mutating func skip() {
+    public mutating func nextIndex() {
         input.formIndex(after: &index)
     }
 
@@ -89,7 +89,7 @@ public struct JSLexer : Sendable {
         var value = ""
         while index < input.endIndex && (input[index].isLetter || input[index] == "_") {
             value.append(input[index])
-            skip()
+            nextIndex()
         }
         if Self.keywords.contains(value) {
             return .keyword(value)
@@ -102,7 +102,7 @@ public struct JSLexer : Sendable {
         var value = ""
         while index < input.endIndex && input[index].isNumber {
             value.append(input[index])
-            skip()
+            nextIndex()
         }
         return .number(Double(value) ?? 0)
     }

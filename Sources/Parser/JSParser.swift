@@ -8,7 +8,7 @@ public struct JSParser : Sendable {
                 print("statement=\(statement)")
             } else {
                 print("\(parser.currentToken)")
-                parser.skip()
+                parser.nextToken()
             }
         }
     }
@@ -21,8 +21,8 @@ public struct JSParser : Sendable {
         self.currentToken = lexer.nextToken()
     }
 
-    /// Assigns the `currentToken` to the next token in the lexer. 
-    mutating func skip() {
+    /// Assigns the `currentToken` to the next token the lexer finds. 
+    mutating func nextToken() {
         currentToken = lexer.nextToken()
     }
 }
