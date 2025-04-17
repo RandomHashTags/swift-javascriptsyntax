@@ -7,26 +7,22 @@ extension JSParser {
             op += "="
             nextToken()
             nextToken()
-            let e = try JSExpr.compoundAssignment(operator: op, variable: expr, value: parseExpression())
+            expr = try .compoundAssignment(operator: op, variable: expr, value: parseExpression())
             guard currentToken == .symbol(";") else {
-                throw .failedExpectation(expected: ";", expectationNote: "et end of compound assignment", actual: "\(currentToken)")
+                throw .failedExpectation(expected: ";", expectationNote: "at end of compound assignment", actual: "\(currentToken)", index: index)
             }
             nextToken()
-            return e
-        }
-        if currentToken == .symbol("=") {
-            nextToken()
-            return try .assignment(variable: expr, value: parseExpression())
-        }
-        while case .symbol(let op) = currentToken, let opPrec = JSLexer.operatorPrecedence[op], opPrec >= minPrec {
-            nextToken()
-            var rhs = try parseUnary()
-            while case .symbol(let nextOp) = currentToken,
-                    let nextPrec = JSLexer.operatorPrecedence[nextOp],
-                    nextPrec > opPrec {
-                rhs = try parseExpression(precedence: nextPrec)
+        } else {
+            while case .symbol(let op) = currentToken, let opPrec = JSLexer.operatorPrecedence[op], opPrec >= minPrec {
+                nextToken()
+                var rhs = try parseUnary()
+                while case .symbol(let nextOp) = currentToken,
+                        let nextPrec = JSLexer.operatorPrecedence[nextOp],
+                        nextPrec > opPrec {
+                    rhs = try parseExpression(precedence: nextPrec)
+                }
+                expr = .binaryOp(op, expr, rhs)
             }
-            expr = .binaryOp(op, expr, rhs)
         }
         return expr
     }

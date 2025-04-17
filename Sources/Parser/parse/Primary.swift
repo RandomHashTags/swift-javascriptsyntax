@@ -16,6 +16,9 @@ extension JSParser {
         case .keyword("undefined"):
             nextToken()
             return .undefined
+        case .keyword("null"):
+            nextToken()
+            return .null
         case .keyword("of"):
             nextToken()
             return .identifier("of")
@@ -26,11 +29,13 @@ extension JSParser {
             return try parseObjectLiteral()
         case .symbol("["):
             return try parseArrayLiteral()
+        case .symbol("|"), .symbol("&"):
+            return try parseLogicalOrBitwiseOperation()
         default:
             if currentToken == .eof {
                 throw .cannotReadAfterEOF
             }
-            print("Unexpected token: \(currentToken)")
+            print("Unexpected token at index \(lexer.input.distance(from: lexer.input.startIndex, to: lexer.index)): \(currentToken)")
             nextToken()
             return .unknown
         }
@@ -39,7 +44,7 @@ extension JSParser {
             case .symbol("."):
                 nextToken()
                 guard case .identifier(let prop) = currentToken else {
-                    throw .failedExpectation(expected: "", expectationNote: "property name after '.'", actual: "\(currentToken)")
+                    throw .failedExpectation(expected: "", expectationNote: "property name after '.'", actual: "\(currentToken)", index: index)
                 }
                 nextToken()
                 expr = .propertyAccess(object: expr, property: prop)
@@ -47,8 +52,11 @@ extension JSParser {
                 expr = try parseCallExpression(callee: expr)
             case .symbol("="):
                 let lhs = expr
-                nextToken()
-                expr = try .assignment(variable: lhs, value: parseExpression())
+                expr = try parseAssignmentOrComparison(expr: lhs)
+                if case .comparison = expr {
+                    let v = expr
+                    expr = try parseComparisons(first: v)
+                }
             case .symbol(let op) where JSLexer.compoundArithmeticTokens.contains(op):
                 let lhs = expr
                 nextToken()

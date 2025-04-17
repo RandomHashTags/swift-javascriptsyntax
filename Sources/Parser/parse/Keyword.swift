@@ -12,8 +12,7 @@ extension JSParser {
             nextToken()
             let value = try parseExpression()
             guard currentToken == .symbol(";") else {
-                print("Expected ';' after return; got \(currentToken)")
-                return nil
+                throw .failedExpectation(expected: ";", expectationNote: "after return", actual: "\(currentToken)", index: index)
             }
             nextToken()
             return .returnStatement(value)

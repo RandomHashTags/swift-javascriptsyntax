@@ -1,7 +1,7 @@
 extension JSParser {
     mutating func parseCallExpression(callee: JSExpr) throws(JSParseError) -> JSExpr {
         guard currentToken == .symbol("(") else {
-            throw .failedExpectation(expected: "(", actual: "\(currentToken)")
+            throw .failedExpectation(expected: "(", actual: "\(currentToken)", index: index)
         }
         nextToken()
         var arguments:[JSExpr] = []
@@ -16,7 +16,7 @@ extension JSParser {
             }
         }
         guard currentToken == .symbol(")") else {
-            throw .failedExpectation(expected: ")", expectationNote: "after arguments", actual: "\(currentToken)")
+            throw .failedExpectation(expected: ")", expectationNote: "after arguments", actual: "\(currentToken)", index: index)
         }
         nextToken()
         return .call(callee: callee, arguments: arguments)

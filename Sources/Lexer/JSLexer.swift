@@ -1,7 +1,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar
 public struct JSLexer : Sendable {
     public static let stringDelimiters:Set<Character> = ["\"", "'", "`"]
-    public static let arithmeticTokens:Set<String> = ["+", "-", "*", "/"]
+    public static let arithmeticTokens:Set<String> = ["+", "-", "*", "/", "%"]
     public static let operatorPrecedence:[String:Int] = [
         "||": 1,
         "&&": 2,
@@ -11,7 +11,7 @@ public struct JSLexer : Sendable {
         "*": 6, "/": 6
     ]
     public static let unaryTokens:Set<Character> = ["!", "-", "+"]
-    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "#"])
+    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&", "|", "#", "?", ":"])
     public static let variableDeclTokens:Set<String> = ["let", "const", "var"]
     public static let keywords:Set<String> = [
         "arguments", "async", "await",

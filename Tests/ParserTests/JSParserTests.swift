@@ -25,6 +25,7 @@ struct JSParserTests {
             //!TEST?
         } else {
             // wow!
+            const again = 1 == 1 || 2 == 2 && 3 == 4;
         }
         """
         )

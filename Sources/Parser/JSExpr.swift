@@ -1,6 +1,8 @@
-public indirect enum JSExpr : Sendable {
+public indirect enum JSExpr : Sendable, Equatable {
     case unknown
     case undefined
+    case null
+
     case number(Double)
     case identifier(String)
     case binaryOp(String, JSExpr, JSExpr)
@@ -13,4 +15,10 @@ public indirect enum JSExpr : Sendable {
     case propertyAccess(object: JSExpr, property: String)
     case assignment(variable: JSExpr, value: JSExpr)
     case compoundAssignment(operator: String, variable: JSExpr, value: JSExpr)
+
+    case comparison(lhs: JSExpr, operation: String, rhs: JSExpr)
+    case comparisons([JSExpr])
+
+    case logicalOperation(String)
+    case bitwiseOperation(String)
 }

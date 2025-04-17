@@ -4,11 +4,11 @@ extension JSParser {
         var pairs:[String:JSExpr] = [:]
         while currentToken != .symbol("}") {
             guard case .identifier(let key) = currentToken else {
-                throw .failedExpectation(expected: "", expectationNote: "identifier for object literal key", actual: "\(currentToken)")
+                throw .failedExpectation(expected: "", expectationNote: "identifier for object literal key", actual: "\(currentToken)", index: index)
             }
             nextToken()
             guard currentToken == .symbol(":") else {
-                throw .failedExpectation(expected: ":", expectationNote: "after key while parsing object literal", actual: "\(currentToken)")
+                throw .failedExpectation(expected: ":", expectationNote: "after key while parsing object literal", actual: "\(currentToken)", index: index)
             }
             nextToken()
             pairs[key] = try parseExpression()
@@ -19,7 +19,7 @@ extension JSParser {
             }
         }
         guard currentToken == .symbol("}") else {
-            throw .failedExpectation(expected: "}", expectationNote: "to close object literal", actual: "\(currentToken)")
+            throw .failedExpectation(expected: "}", expectationNote: "to close object literal", actual: "\(currentToken)", index: index)
         }
         nextToken()
         return .objectLiteral(pairs)

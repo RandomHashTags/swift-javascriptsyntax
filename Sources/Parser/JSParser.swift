@@ -12,6 +12,8 @@ public struct JSParser : Sendable {
 
     var lexer:JSLexer
     var currentToken:JSToken
+
+    var index : Int { lexer.input.distance(from: lexer.input.startIndex, to: lexer.index) }
     
     public init(input: String) {
         self.lexer = JSLexer(input: input)
