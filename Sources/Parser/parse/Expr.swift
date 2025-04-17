@@ -3,15 +3,20 @@ import Lexer
 extension JSParser {
     mutating func parseExpression(precedence minPrec: Int = 0) throws(JSParseError) -> JSExpr {
         var expr = try parseUnary()
-        if case .symbol(let op) = currentToken, JSLexer.compoundArithmeticTokens.contains(op) {
-            let lhs = expr
+        if case .symbol(var op) = currentToken, JSLexer.arithmeticTokens.contains(op), lexer.input[lexer.index] == "=" {
+            op += "="
             nextToken()
-            return try .compoundAssignment(operator: op, variable: lhs, value: parseExpression())
+            nextToken()
+            let e = try JSExpr.compoundAssignment(operator: op, variable: expr, value: parseExpression())
+            guard currentToken == .symbol(";") else {
+                throw .failedExpectation(expected: ";", expectationNote: "et end of compound assignment", actual: "\(currentToken)")
+            }
+            nextToken()
+            return e
         }
         if currentToken == .symbol("=") {
-            let lhs = expr
             nextToken()
-            return try .assignment(variable: lhs, value: parseExpression())
+            return try .assignment(variable: expr, value: parseExpression())
         }
         while case .symbol(let op) = currentToken, let opPrec = JSLexer.operatorPrecedence[op], opPrec >= minPrec {
             nextToken()

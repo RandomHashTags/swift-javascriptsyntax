@@ -17,34 +17,24 @@ extension JSParser {
             throw .failedExpectation(expected: "{", expectationNote: "to start 'if' block", actual: "\(currentToken)")
         }
         nextToken()
-        var block:[JSStatement] = []
+        var block:[JSSyntax] = []
         while currentToken != .symbol("}") {
-            if let s = try parseStatement() {
-                block.append(s)
-            } else {
-                print("Invalid statement in 'if' block; got \(currentToken)")
-                break
-            }
+            try block.append(parseSyntax())
         }
         guard currentToken == .symbol("}") else {
             throw .failedExpectation(expected: "}", expectationNote: "to close 'if' block", actual: "\(currentToken)")
         }
         nextToken()
-        var elseBranch:[JSStatement]? = nil
-        if case .keyword("else") = currentToken {
+        var elseBranch:[JSSyntax]? = nil
+        if currentToken == .keyword("else") {
             nextToken()
             guard currentToken == .symbol("{") else {
                 throw .failedExpectation(expected: "{", expectationNote: "to start 'else' block", actual: "\(currentToken)")
             }
             nextToken()
-            var elses:[JSStatement] = []
+            var elses:[JSSyntax] = []
             while currentToken != .symbol("}") {
-                if let stmt = try parseStatement() {
-                    elses.append(stmt)
-                } else {
-                    print("Invalid statement in 'else' block")
-                    break
-                }
+                try elses.append(parseSyntax())
             }
             guard currentToken == .symbol("}") else {
                 throw .failedExpectation(expected: "}", expectationNote: "to close 'else' block", actual: "\(currentToken)")

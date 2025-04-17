@@ -11,9 +11,9 @@ public struct JSLexer : Sendable {
         "*": 6, "/": 6
     ]
     public static let unaryTokens:Set<Character> = ["!", "-", "+"]
-    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "//", "/*", "#"])
+    public static let symbols:Set<String> = arithmeticTokens.union(["{", "}", "(", ")", "[", "]", "=", ".", ",", ";", "<", ">", "<=", ">=", "&&", "||", "#"])
     public static let variableDeclTokens:Set<String> = ["let", "const", "var"]
-    public static let keywords:Set<String> = variableDeclTokens.union([
+    public static let keywords:Set<String> = [
         "arguments", "async", "await",
         "break",
         "case", "catch", "class", "const", "continue",
@@ -23,6 +23,7 @@ public struct JSLexer : Sendable {
         "if", "implements", "import", "in", "instanceof", "interface",
         "let",
         "new", "null",
+        "of",
         "package", "private", "protected", "public",
         "return",
         "static", "super", "switch",
@@ -31,7 +32,7 @@ public struct JSLexer : Sendable {
         "while", "with",
         "yield",
         "undefined"
-    ])
+    ]
     public static let compoundArithmeticTokens:Set<String> = ["+=" , "-=", "*=", "/="]
 
     public let input:String
@@ -43,6 +44,7 @@ public struct JSLexer : Sendable {
     }
 
     /// Skips leading whitespace and returns the next found JSToken.
+    @inlinable
     public mutating func nextToken() -> JSToken {
         skipWhitespace()
         guard index < input.endIndex else {
@@ -74,6 +76,7 @@ public struct JSLexer : Sendable {
     }
 
     /// Assigns the `index` to the next non-whitespace character's index.
+    @inlinable
     public mutating func skipWhitespace() {
         while index < input.endIndex && input[index].isWhitespace {
             nextIndex()
@@ -81,10 +84,12 @@ public struct JSLexer : Sendable {
     }
 
     /// Increments the `index` by one.
+    @inlinable
     public mutating func nextIndex() {
         input.formIndex(after: &index)
     }
 
+    @inlinable
     public mutating func readIdentifierOrKeyword() -> JSToken {
         var value = ""
         while index < input.endIndex && (input[index].isLetter || input[index] == "_") {
@@ -97,6 +102,7 @@ public struct JSLexer : Sendable {
         return .identifier(value)
     }
 
+    @inlinable
     public mutating func readNumber() -> JSToken {
         // TODO: try to parse a more accurate JSToken other than just `number`
         var value = ""

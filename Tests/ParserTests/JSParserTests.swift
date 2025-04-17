@@ -20,6 +20,11 @@ struct JSParserTests {
             ding dong
             */
             var yoink=true;
+            bro = 4;
+            bro += 1 + 1;
+            //!TEST?
+        } else {
+            // wow!
         }
         """
         )

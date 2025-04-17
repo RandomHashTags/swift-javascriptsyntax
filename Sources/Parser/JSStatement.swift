@@ -3,7 +3,7 @@ public enum JSStatement : Sendable {
     case function(JSFunction)
     case returnStatement(JSExpr)
     case ifStatement(IfStatement)
-    case loop(JSLoopType, JSExpr)
+    case loop(loopType: JSLoopType, conditions: [JSSyntax], block: [JSSyntax])
 
     case comment(String)
     case blockComment(String)

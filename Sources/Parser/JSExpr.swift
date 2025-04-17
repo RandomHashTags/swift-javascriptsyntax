@@ -13,5 +13,4 @@ public indirect enum JSExpr : Sendable {
     case propertyAccess(object: JSExpr, property: String)
     case assignment(variable: JSExpr, value: JSExpr)
     case compoundAssignment(operator: String, variable: JSExpr, value: JSExpr)
-    case loop(JSLoopType, JSExpr)
 }

@@ -16,6 +16,9 @@ extension JSParser {
         case .keyword("undefined"):
             nextToken()
             return .undefined
+        case .keyword("of"):
+            nextToken()
+            return .identifier("of")
         case .identifier(let name):
             nextToken()
             expr = .identifier(name)
@@ -24,7 +27,11 @@ extension JSParser {
         case .symbol("["):
             return try parseArrayLiteral()
         default:
+            if currentToken == .eof {
+                throw .cannotReadAfterEOF
+            }
             print("Unexpected token: \(currentToken)")
+            nextToken()
             return .unknown
         }
         while true {

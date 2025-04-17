@@ -10,5 +10,6 @@ public enum JSToken : Equatable, Sendable {
     case string(delimiter: Character, String)
     case keyword(String)
     case symbol(String)
+
     case eof
 }

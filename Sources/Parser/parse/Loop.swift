@@ -11,10 +11,27 @@ extension JSParser {
         }
         nextToken()
         guard currentToken == .symbol("(") else {
-            throw .failedExpectation(expected: "(", expectationNote: "to open loop", actual: "\(currentToken)")
+            throw .failedExpectation(expected: "(", expectationNote: "to open loop condition", actual: "\(currentToken)")
         }
         nextToken()
-        var expr:JSExpr = .unknown
-        return .loop(loopType, expr)
+        var conditions:[JSSyntax] = []
+        while currentToken != .symbol(")") {
+            let syntax = try parseSyntax()
+            print("parseLoop;condition syntax=\(syntax)")
+            conditions.append(syntax)
+        }
+        nextToken()
+        guard currentToken == .symbol("{") else {
+            throw .failedExpectation(expected: "{", expectationNote: "to open loop block", actual: "\(currentToken)")
+        }
+        nextToken()
+        var block:[JSSyntax] = []
+        while currentToken != .symbol("}") {
+            let syntax = try parseSyntax()
+            print("parseLoop;block syntax=\(syntax)")
+            block.append(syntax)
+        }
+        nextToken()
+        return .loop(loopType: loopType, conditions: conditions, block: block)
     }
 }
